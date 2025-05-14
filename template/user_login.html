@@ -1,0 +1,25 @@
+{% extends 'home.html' %}
+    {% block title %}
+        <title>Login</title>
+    {% endblock %}
+
+        {% block body %}
+    <center>
+        <h1>User Login </h1>
+        <form  method="POST">
+            {% csrf_token %}
+            <label for="email">Email :
+                <input type="email" name="email" id="email" required>
+            </label>
+            <br><br>
+            <label for="password">Password :
+                <input type="password" name="password" id="password" required>
+            </label>
+            <br><br>    
+            <input type="submit" value="Login">
+
+
+        </form>
+    </center>
+
+    {% endblock %}

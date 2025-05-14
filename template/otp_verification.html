@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <center>
+        <h1>OTP Verification</h1>
+        
+        <form method="POST">
+            {% csrf_token %}
+                {{ EOTPF.as_p }}
+            <input type="submit" value="Verify OTP">
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }}">
+                    {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+        </form>
+    </center>
+    
+</body>
+</html>

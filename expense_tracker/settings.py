@@ -13,7 +13,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+import os
 BASE_DIR = Path(__file__).resolve().parent.parent
+TEMPLATE_DIR=os.path.join(BASE_DIR,'template')
 
 
 # Quick-start development settings - unsuitable for production
@@ -55,7 +57,7 @@ ROOT_URLCONF = "expense_tracker.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [TEMPLATE_DIR],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -131,3 +133,12 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL='accounts.UserProfile'
+
+
+# Email settings
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER='lokeshpatel2714@gmail.com'
+EMAIL_HOST_PASSWORD='sfpc nnij zuhd fpfq'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
