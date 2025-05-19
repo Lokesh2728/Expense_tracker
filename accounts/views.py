@@ -24,8 +24,8 @@ def register(request):
         if UFO.is_valid():
             user = UFO.save(commit=False)
             password = UFO.cleaned_data['password']
-            user.set_password(password)     # ✅ Hash the password
-            user.is_active = True           # Optional: activate user
+            user.set_password(password)    
+            user.is_active = True           
             user.save() 
             memail=UFO.cleaned_data['email']
             #genrate otp
@@ -98,3 +98,6 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('home'))
+
+
+
