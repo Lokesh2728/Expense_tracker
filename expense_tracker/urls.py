@@ -24,11 +24,12 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("",TemplateView.as_view(template_name='home.html'),name='home'),
+    path("",home,name='home'),
     path('register/', register, name='register'),
     path('otp_verification/', otp_verification, name='otp_verification'),
     path('login/', user_login, name='user_login'),
     path('logout/', user_logout, name='user_logout'),
+    path('Balanceview',Balanceview.as_view(),name='Balanceview'),
 
 
 

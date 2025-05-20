@@ -1,12 +1,25 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.views.generic import  CreateView,ListView,UpdateView,DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from expenses.models import *
 from expenses.forms import *
 from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
+
+
+
 
 # Create your views here.
-
+@login_required
+def home(request):
+    user = request.user  
+    recent_transactions = Expense.objects.filter(username=user).order_by('-date')[:3]
+    balance = Balance.objects.filter(user_id=request.user).first()
+    d = {
+        'recent_transactions': recent_transactions,
+        'balance':balance,
+    }
+    return render(request, 'home.html', d)
 
 class AddExpense(LoginRequiredMixin,CreateView):
     model=Expense
@@ -38,4 +51,21 @@ class Expense_Delete(LoginRequiredMixin,DeleteView):
     template_name='Expense_delete.html'
     context_object_name='expense'
     success_url=reverse_lazy('home')
+
+
+class Balanceview(LoginRequiredMixin, CreateView):
+    
+    model = Balance
+    fields = ['balance']
+    template_name = 'balance_create.html'
+    context_object_name='Balance'
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        user = self.request.user
+        new_amount = form.cleaned_data['balance']
+        balance_obj=Balance.objects.get_or_create(user_id=user)[0]
+        balance_obj.balance += new_amount
+        balance_obj.save()
+        return redirect(self.success_url)
 
