@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Expense List</title>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4 text-primary">All Expenses</h2>
+    
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered align-middle shadow-sm">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>ID</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exp in expenseobject %}
+                <tr>
+                    <td class="text-center">
+                        <a href="{% url 'update' pk=exp.pk %}" class="text-decoration-none text-primary fw-bold">
+                            {{ exp.id }}
+                        </a>
+                    </td>
+                    <td class="text-end text-success fw-semibold">₹{{ exp.amount }}</td>
+                    <td class="text-center">{{ exp.date }}</td>
+                    <td class="text-center">{{ exp.category }}</td>
+                    <td>{{ exp.description }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No expenses found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

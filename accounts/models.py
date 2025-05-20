@@ -18,6 +18,8 @@ class UserProfileManager(BaseUserManager):
         UO.is_superuser=True
         UO.save()
 
+    
+
 
 class UserProfile(AbstractBaseUser,PermissionsMixin):
     email=models.EmailField(primary_key=True)
@@ -29,6 +31,10 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
     objects=UserProfileManager()
     USERNAME_FIELD='email'
     REQUIRED_FIELDS=['first_name','last_name']
+
+    
+
+    
 
 
 

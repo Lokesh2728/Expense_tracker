@@ -50,13 +50,13 @@
             {% endfor %}
         </ul>
         <div class="mt-3">
-            <a href="{% url 'transactions' %}" class="btn btn-outline-primary">View All Transactions</a>
+            <a href="{% url 'ExpenseList' %}" class="btn btn-outline-primary">View All Transactions</a>
         </div>
     </div>
 
     <div class="text-center">
-        <a href="{% url 'add-expense' %}" class="btn btn-danger me-2">+ Add Expense</a>
-        <a href="{% url 'add-income' %}" class="btn btn-success">+ Add Income</a>
+        <a href="{% url 'AddExpense' %}" class="btn btn-danger me-2">+ Add Expense</a>
+        <a href="{% url 'home' %}" class="btn btn-success">+ Add Income</a>
     </div>
 </div>
 

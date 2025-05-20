@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}
+<title>Delete Confirmation</title>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5" style="max-width: 500px;">
+  <div class="card shadow-sm">
+    <div class="card-body text-center">
+      <h3 class="mb-4">Are you sure you want to delete <strong>{{ expense.category }}</strong>?</h3>
+      
+      <form method="POST" class="d-inline">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger px-4">Delete</button>
+      </form>
+      
+      <a href="{% url 'ExpenseList' %}" class="btn btn-secondary px-4 ms-3">Cancel</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
