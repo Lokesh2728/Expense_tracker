@@ -24,5 +24,6 @@ class Expense(models.Model):
 class Balance(models.Model):
     balance=models.DecimalField( max_digits=10, decimal_places=2,default=0)
     user_id=models.ForeignKey("accounts.UserProfile",on_delete=models.CASCADE)
+    created_at = models.DateField(auto_now=True)
+    time=models.TimeField(auto_now=True)
 
-    

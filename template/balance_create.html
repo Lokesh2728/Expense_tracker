@@ -1,17 +1,31 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    <title>add balance</title>
+    <title>Add Balance</title>
 {% endblock %}
 
-
 {% block body %}
-<center>
-
-    <form method="POST" class="">
-        {% csrf_token %}
-        {{form.as_p}}
-    <input type="submit" value="Add Balance">    
-    </form>
-</center>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow rounded-3">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Add Balance</h4>
+                </div>
+                <div class="card-body ">
+                    <center>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <h6>Enter the amount to Deposit</h6>    
+                                {{ form.balance }}
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success mt-3">Add Balance</button>
+                            </div>
+                        </form>
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

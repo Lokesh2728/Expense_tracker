@@ -1,10 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from accounts.forms import *
 from django.http import HttpResponse,HttpResponseRedirect
 from django.core.mail import send_mail
 from django.contrib import messages
 from accounts.models import EmailOTP
-from django.contrib.auth import login,logout
+from django.contrib.auth import login,logout,update_session_auth_hash
 from .utils import custom_authenticate
 from django.contrib.auth.decorators import login_required
 
@@ -99,5 +99,26 @@ def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('home'))
 
+
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        old_password = request.POST.get('oldpassword')
+        new_password = request.POST.get('password')
+        user = request.user
+        if user.check_password(old_password):
+            user.set_password(new_password)  
+            user.save()
+
+            update_session_auth_hash(request, user)
+
+            messages.success(request, "✅ Password changed successfully.")
+            return redirect('home')
+        else:
+            messages.error(request, "❌ Old password is incorrect.")
+            return render(request, 'change_password.html')
+
+    return render(request,"Change_password.html")
 
 

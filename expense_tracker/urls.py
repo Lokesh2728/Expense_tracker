@@ -30,6 +30,7 @@ urlpatterns = [
     path('login/', user_login, name='user_login'),
     path('logout/', user_logout, name='user_logout'),
     path('Balanceview',Balanceview.as_view(),name='Balanceview'),
+    path('change_password/',change_password,name='change_password'),
 
 
 

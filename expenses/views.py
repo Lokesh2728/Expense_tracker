@@ -1,25 +1,33 @@
 from django.shortcuts import render,redirect
-from django.views.generic import  CreateView,ListView,UpdateView,DeleteView
+from django.views.generic import  CreateView,ListView,UpdateView,DeleteView,FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from expenses.models import *
 from expenses.forms import *
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 
 
 
 
 # Create your views here.
-@login_required
 def home(request):
     user = request.user  
-    recent_transactions = Expense.objects.filter(username=user).order_by('-date')[:3]
+    monthly_expense=Expense.objects.filter(username=user).aggregate(Sum('amount'))['amount__sum'] or 0 
+    recent_transactions = Expense.objects.filter(username=user).order_by('-id')[:3]
     balance = Balance.objects.filter(user_id=request.user).first()
     d = {
         'recent_transactions': recent_transactions,
         'balance':balance,
+        'monthly_expense':monthly_expense,
     }
     return render(request, 'home.html', d)
+
+
+
+
+
+
 
 class AddExpense(LoginRequiredMixin,CreateView):
     model=Expense
@@ -29,6 +37,10 @@ class AddExpense(LoginRequiredMixin,CreateView):
 
     def form_valid(self, form):
         form.instance.username = self.request.user
+        new_amount = form.cleaned_data['amount']
+        balance_obj=Balance.objects.get(user_id=self.request.user)
+        balance_obj.balance -= new_amount
+        balance_obj.save()
         return super().form_valid(form)
 
 
@@ -69,3 +81,6 @@ class Balanceview(LoginRequiredMixin, CreateView):
         balance_obj.save()
         return redirect(self.success_url)
 
+
+
+    

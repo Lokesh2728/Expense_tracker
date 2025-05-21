@@ -8,3 +8,4 @@ class ExpenseForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4, 'cols': 40}),
         }
+
