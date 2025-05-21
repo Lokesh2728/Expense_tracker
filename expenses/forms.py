@@ -9,3 +9,12 @@ class ExpenseForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 4, 'cols': 40}),
         }
 
+class Budgetform(forms.ModelForm):
+    class Meta:
+        model=Buget
+        fields=['budget']
+        widgets={
+            'budget':forms.NumberInput(attrs={
+                'placeholder': 'Enter your monthly budget'
+            })
+        }

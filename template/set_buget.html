@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg rounded">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Set Monthly Budget</h4>
+                </div>
+                <center>
+
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ EBFO.as_p }}
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success mt-3">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

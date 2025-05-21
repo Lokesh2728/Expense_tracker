@@ -24,10 +24,10 @@
           {% if user.is_authenticated %}
           
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Actions</a>
+              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Profile</a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a></li>
-                <li><a class="dropdown-item" href="#">Set Monthly Budget</a></li>
+                <li><a class="dropdown-item" href="{% url 'set_budget' %}">Set Monthly Budget</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="{% url 'user_logout' %}">Logout</a></li>
               </ul>

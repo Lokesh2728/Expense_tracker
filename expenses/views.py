@@ -6,7 +6,7 @@ from expenses.forms import *
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
-
+from django.http import HttpResponse
 
 
 
@@ -16,16 +16,14 @@ def home(request):
     monthly_expense=Expense.objects.filter(username=user).aggregate(Sum('amount'))['amount__sum'] or 0 
     recent_transactions = Expense.objects.filter(username=user).order_by('-id')[:3]
     balance = Balance.objects.filter(user_id=request.user).first()
+    montly_budget=Buget.objects.filter(username=user).first()
     d = {
         'recent_transactions': recent_transactions,
         'balance':balance,
         'monthly_expense':monthly_expense,
+        'montly_budget':montly_budget,
     }
     return render(request, 'home.html', d)
-
-
-
-
 
 
 
@@ -38,9 +36,16 @@ class AddExpense(LoginRequiredMixin,CreateView):
     def form_valid(self, form):
         form.instance.username = self.request.user
         new_amount = form.cleaned_data['amount']
+
+        # deduting the balance from my account 
         balance_obj=Balance.objects.get(user_id=self.request.user)
         balance_obj.balance -= new_amount
         balance_obj.save()
+
+        #deducting the balace from my monthly limit
+        monthly_limit=Buget.objects.get(username=self.request.user)
+        monthly_limit.budget -= new_amount
+        monthly_limit.save()
         return super().form_valid(form)
 
 
@@ -81,6 +86,21 @@ class Balanceview(LoginRequiredMixin, CreateView):
         balance_obj.save()
         return redirect(self.success_url)
 
+@login_required
+def set_budget(request):
+    EBFO = Budgetform()
+    d = {'EBFO': EBFO}
 
+    if request.method == 'POST':
+        BFO = Budgetform(request.POST)
+        if BFO.is_valid():
+            budget = BFO.cleaned_data.get('budget')
+            budget_obj, created = Buget.objects.get_or_create(username=request.user)
+            budget_obj.budget = budget
+            budget_obj.save()
+            return HttpResponse('created')
+        else:
+            return HttpResponse('invalid')
 
+    return render(request, 'set_buget.html', d)
     

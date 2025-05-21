@@ -27,3 +27,11 @@ class Balance(models.Model):
     created_at = models.DateField(auto_now=True)
     time=models.TimeField(auto_now=True)
 
+
+
+class Buget(models.Model):
+    budget=models.DecimalField(max_digits=10,decimal_places=2,default=0)
+    username=models.ForeignKey("accounts.UserProfile",on_delete=models.CASCADE)
+   
+    def __str__(self):
+        return str(self.budget)

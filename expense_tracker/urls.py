@@ -31,6 +31,7 @@ urlpatterns = [
     path('logout/', user_logout, name='user_logout'),
     path('Balanceview',Balanceview.as_view(),name='Balanceview'),
     path('change_password/',change_password,name='change_password'),
+    path('set_budget/',set_budget,name='set_budget'),
 
 
 
