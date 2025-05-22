@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<div class="container mt-4">
+  <h2 class="mb-4">Expense Dashboard</h2>
+
+  <div class="card mb-4 p-3 shadow-sm">
+    <h4 class="mb-3">Daily Expense Bar Chart</h4>
+    <img src="{% static 'charts/bar_chart.png' %}" alt="Bar Chart" class="img-fluid">
+  </div>
+
+  <!-- Future charts like pie chart, line chart will go here -->
+</div>
+{% endblock %}

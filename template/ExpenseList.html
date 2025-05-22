@@ -1,41 +1,67 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    <title>Expense List</title>
+    <title>Expense & Account Transactions</title>
 {% endblock %}
 
 {% block body %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4 text-primary">All Expenses</h2>
+    <h2 class="text-center mb-4 text-primary fw-bold">All Transactions</h2>
     
-    <div class="table-responsive">
-        <table class="table table-hover table-bordered align-middle shadow-sm">
-            <thead class="table-dark text-center">
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark text-center text-uppercase">
                 <tr>
-                    <th>ID</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                    <th>Category</th>
-                    <th>Description</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Amount (₹)</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Description</th>
                 </tr>
             </thead>
             <tbody>
-                {% for exp in expenseobject %}
-                <tr>
-                    <td class="text-center">
-                        <a href="{% url 'update' pk=exp.pk %}" class="text-decoration-none text-primary fw-bold">
-                            {{ exp.id }}
-                        </a>
-                    </td>
-                    <td class="text-end text-danger fw-semibold">₹{{ exp.amount }}</td>
-                    <td class="text-center">{{ exp.date }}</td>
-                    <td class="text-center">{{ exp.category }}</td>
-                    <td>{{ exp.description }}</td>
-                </tr>
+                {% for txn in transactions %}
+                    <tr >
+                        <td class="text-center align-middle">
+                            {% if txn.txn_type == 'Expense' %}
+                                <a href="{% url 'update' pk=txn.pk %}" class="text-decoration-none text-primary fw-semibold">
+                                    Expense
+                                </a>
+                            {% elif txn.transaction_type == 'Credit' %}
+                                Account Credit
+                            {% else %}
+                                Account Debit
+                            {% endif %}
+                        </td>
+                        <td class="text-center fw-semibold align-middle {% if txn.transaction_type == 'Credit' %}text-success{% elif txn.transaction_type == 'Debit' %}text-danger{% else %}{% endif %}">
+                            ₹{{ txn.transaction_amount|floatformat:2 }}
+                        </td>
+                        <td class="text-center align-middle">
+                            {{ txn.transaction_date|date:"d M Y" }}
+                        </td>
+                        <td class="text-center align-middle">
+                            {% if txn.txn_type == 'Expense' %}
+                                {{ txn.category }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td class="align-middle  text-center ">
+                            {% if txn.txn_type == 'Expense' %}
+                                {{ txn.description }}
+                            {% else %}
+                                {% if txn.transaction_type == 'Credit' %}
+                                    ₹{{ txn.transaction_amount|floatformat:2 }} added to the account
+                                {% else %}
+                                    ₹{{ txn.transaction_amount|floatformat:2 }} debited from the account
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
                 {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center text-muted">No expenses found.</td>
-                </tr>
+                    <tr>
+                        <td colspan="5" class="text-center text-muted fst-italic py-4">No transactions found.</td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>

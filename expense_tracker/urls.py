@@ -19,8 +19,6 @@ from django.urls import path,re_path
 from accounts.views import *
 from expenses.views import *
 
-from django.views.generic import TemplateView
-
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -32,6 +30,7 @@ urlpatterns = [
     path('Balanceview',Balanceview.as_view(),name='Balanceview'),
     path('change_password/',change_password,name='change_password'),
     path('set_budget/',set_budget,name='set_budget'),
+    path('dashboard/',dashboard,name='dashboard'),
 
 
 
