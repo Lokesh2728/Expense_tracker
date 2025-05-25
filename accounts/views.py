@@ -3,10 +3,11 @@ from accounts.forms import *
 from django.http import HttpResponse,HttpResponseRedirect
 from django.core.mail import send_mail
 from django.contrib import messages
-from accounts.models import EmailOTP
+from accounts.models import EmailOTP    
 from django.contrib.auth import login,logout,update_session_auth_hash
 from .utils import custom_authenticate
 from django.contrib.auth.decorators import login_required
+from .signals import password_changed
 
 from django.urls import reverse
 # Create your views here.
@@ -27,19 +28,7 @@ def register(request):
             user.set_password(password)    
             user.is_active = True           
             user.save() 
-            memail=UFO.cleaned_data['email']
-            #genrate otp
             
-            otp=random.randint(100001,999998)
-            EOTFO=EmailOTP.objects.create(email=memail, otp_code=otp)
-            #send otp
-            send_mail(
-                'OTP for Registration',
-                f'Your OTP is {otp} \n  This OTP is valid for 10 minutes',
-                'lokeshpatel2714@gmail.com',
-                [memail],
-                fail_silently=True,
-            )
             return HttpResponseRedirect('/otp_verification')
         
     return render(request,'register.html',d)
@@ -70,7 +59,7 @@ def otp_verification(request):
                         [email],
                         fail_silently=True,
                     )
-                    return HttpResponse('Registration successful')
+                    return HttpResponseRedirect('/home')
                 
             except EmailOTP.DoesNotExist:
                 messages.error(request,'Invalid OTP')
@@ -112,6 +101,8 @@ def change_password(request):
             user.save()
 
             update_session_auth_hash(request, user)
+
+            password_changed.send(sender=change_password, user=user, request=request)
 
             messages.success(request, "✅ Password changed successfully.")
             return redirect('home')

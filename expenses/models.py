@@ -32,8 +32,10 @@ class Balance(models.Model):
 
 
 class Buget(models.Model):
+    monthly_set=models.DecimalField(max_digits=10,decimal_places=2,default=0)
     budget=models.DecimalField(max_digits=10,decimal_places=2,default=0)
     username=models.ForeignKey("accounts.UserProfile",on_delete=models.CASCADE)
+
    
     def __str__(self):
         return str(self.budget)
@@ -47,11 +49,10 @@ class Transaction(models.Model):
     )
     
     user = models.ForeignKey("accounts.UserProfile", on_delete=models.CASCADE)
-    date = models.DateField(auto_now_add=True)
-    category = models.CharField(max_length=100, blank=True, null=True)  # for expense category
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES)
-    amount = models.DecimalField(max_digits=12, decimal_places=2)
-
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    category = models.CharField(max_length=100, blank=True, null=True)  # optional for expenses
+    date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.transaction_type} - {self.amount} - {self.user.username}"

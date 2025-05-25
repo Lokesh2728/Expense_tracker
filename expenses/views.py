@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.http import HttpResponse
 from .charts import *
-
+from .signals import *
 from itertools import chain
 from django.utils import timezone
 
@@ -17,15 +17,22 @@ from django.utils import timezone
 # Create your views here.
 def home(request):
     user = request.user  
-    monthly_expense=Expense.objects.filter(username=user).aggregate(Sum('amount'))['amount__sum'] or 0 
-    recent_transactions = Expense.objects.filter(username=user).order_by('-id')[:3]
     balance = Balance.objects.filter(user_id=request.user).last()
     montly_budget=Buget.objects.filter(username=user).first()
+    Sett=Buget.objects.filter(username=user).values_list('monthly_set', flat=True).first()
+    monthly_expense=Expense.objects.filter(username=user).aggregate(Sum('amount'))['amount__sum'] or 0 
+    recent_transactions = Expense.objects.filter(username=user).order_by('-id')[:3]
+    percentage_spent = (monthly_expense / Sett) * 100 if Sett else 0
+
+
     d = {
         'recent_transactions': recent_transactions,
         'balance':balance,
         'monthly_expense':monthly_expense,
         'montly_budget':montly_budget,
+        'percentage_spent':percentage_spent
+        
+
     }
     return render(request, 'home.html', d)
 
@@ -33,15 +40,37 @@ def home(request):
 
 @login_required
 def dashboard(request):
-    user=request.user
+    user = request.user
+
+    # Total monthly expense
+    monthly_expense = Expense.objects.filter(username=user).aggregate(Sum('amount'))['amount__sum'] or 0 
+
+    # Monthly budget and value
+    monthly_budget_obj = Buget.objects.filter(username=user).first()
+    monthly_budget = monthly_budget_obj.monthly_set if monthly_budget_obj else 0
+
+    # Calculate percentage spent (avoid ZeroDivisionError)
+    percentage = (float(monthly_expense) / float(monthly_budget)) * 100 if monthly_budget else 0
+
+    # Generate charts
     daily_Expense(user)
-    context={
-        'bar_chart': 'expenses/static/charts/bar_chart.png'
+    pie_chart(user)
+    monthly_expense_trend(user)
+    current_month_daily_trend(user)
+
+    context = {
+        'has_expense': monthly_expense > 0,
+        'monthly_expense': monthly_expense,
+        'monthly_budget': monthly_budget,  # renamed for consistency
+        'percentage': round(percentage, 2),
+        'insight': f"You’ve spent {round(percentage, 2)}% of your budget",
+        'bar_chart': 'expenses/static/charts/bar_chart.png',
+        'pie_chart': 'expenses/static/charts/pie_chart.png',
+        'line_chart': 'expenses/static/charts/monthly_expense_trend.png',
+        'current_month_trend': 'expenses/static/charts/current_month_trend.png',  # fixed path
     }
-    return render(request,'dashboard.html')
 
-
-
+    return render(request, 'dashboard.html', context)
 
 
 
@@ -75,6 +104,15 @@ class AddExpense(LoginRequiredMixin,CreateView):
         monthly_limit = Buget.objects.get_or_create(username=user)[0]
         monthly_limit.budget -= new_amount
         monthly_limit.save()
+
+        category = Expense.objects.filter(username_id=user).order_by('-date').values_list('category', flat=True).first()
+        Transaction.send(
+            sender=AddExpense,user=user,
+            request=self.request,
+            transaction_amount=new_amount,
+            category=category
+            
+            )
 
         return super().form_valid(form)
 
@@ -151,7 +189,20 @@ class Balanceview(LoginRequiredMixin, CreateView):
         latest_record = Balance.objects.filter(user_id=user).order_by('-created_at', '-time').first()
         previous_total = latest_record.total_balance if latest_record else 0
         # Update the new total_balance
-        form.instance.total_balance = previous_total + new_amount
+        updated_total = previous_total + new_amount
+        form.instance.total_balance = updated_total
+
+
+        creditedAmount.send(
+            sender=Balanceview,
+            user=self.request.user,
+            request=self.request,
+            credited_amount=form.cleaned_data['balance']
+        )
+
+
+
+        
 
         return super().form_valid(form)
 
@@ -169,6 +220,7 @@ def set_budget(request):
             budget = BFO.cleaned_data.get('budget')
             budget_obj, created = Buget.objects.get_or_create(username=request.user)
             budget_obj.budget = budget
+            budget_obj.monthly_set=budget
             budget_obj.save()
             return HttpResponse('created')
         else:

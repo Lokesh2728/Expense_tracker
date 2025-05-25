@@ -1,14 +1,118 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block body %}
-<div class="container mt-4">
+<style>
+  .card-header-gradient {
+    background: linear-gradient(90deg, #4a90e2, #007bff);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    font-weight: 600;
+  }
+  .card-body-colored {
+    background-color: #f7f9fc;
+  }
+  .card-shadow:hover {
+    transform: scale(1.01);
+    transition: all 0.2s ease-in-out;
+  }
+</style>
+
+
+
+<div class="container mt-5">
   <h2 class="mb-4">Expense Dashboard</h2>
+  {% if has_expense %}
+        <!-- Monthly Insight -->
+        <div class="card text-white bg-info shadow-sm mb-4">
+          <div class="card-body text-center">
+            <h5 class="card-title">Monthly Insight</h5>
+            <p class="card-text display-6">You’ve spent {{ percentage|floatformat:2  }}% of your budget</p>
+          </div>
+        </div>
 
-  <div class="card mb-4 p-3 shadow-sm">
-    <h4 class="mb-3">Daily Expense Bar Chart</h4>
-    <img src="{% static 'charts/bar_chart.png' %}" alt="Bar Chart" class="img-fluid">
-  </div>
 
-  <!-- Future charts like pie chart, line chart will go here -->
-</div>
+
+        <!-- Monthly Budget vs Expense Cards -->
+        <div class="row mb-4">
+          <div class="col-md-6 col-sm-12">
+            <div class="card shadow-sm text-bg-light">
+              <div class="card-body text-center">
+                <h5 class="card-title">Total Expenses</h5>
+                <p class="card-text display-6">₹{{ monthly_expense|default:'0.00' }}</p>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-md-6 col-sm-12">
+            <div class="card shadow-sm text-bg-light">
+              <div class="card-body text-center">
+                <h5 class="card-title">Monthly Budget</h5>
+                <p class="card-text display-6">₹{{ montly_budget|default:'0.00' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- Budget Recommendation -->
+        {% if recommendation %}
+        <div class="alert alert-warning shadow-sm">
+          <strong>Budget Tip:</strong> {{ recommendation }} 
+        </div>
+        {% endif %}
+ 
+
+
+
+  <!-- Filters -->
+  <!-- <form method="GET" class="mb-4">
+    <label for="month">Compare with another month:</label>
+    <input type="month" name="month" id="month" class="form-control" value="{{ request.GET.month }}">
+    <button class="btn btn-primary mt-2">Compare</button>
+  </form> -->
+
+
+
+  <!-- Charts -->
+      <div class="row mb-4">
+        <div class="col-md-6 col-sm-12">
+          <div class="card shadow-sm p-3">
+            <h5 class="mb-3">Daily Expenses</h5>
+            <img src="{% static 'charts/bar_chart.png' %}" alt="Daily Expense Bar Chart" class="img-fluid">
+          </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <div class="card shadow-sm p-3">
+            <h5 class="mb-3">Expenses by Category</h5>
+            <img src="{% static 'charts/pie_chart.png' %}" alt="Expenses by Category Pie Chart" class="img-fluid">
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row mb-4">
+        <div class="col-md-6 col-sm-12">
+          <div class="card shadow-sm p-3">
+            <h5 class="mb-3">Monthly Expense Trend</h5>
+            <img src="{% static 'charts/monthly_expense_trend.png' %}" alt="Spending Trend Line Chart" class="img-fluid">
+          </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <div class="card shadow-sm p-3">
+            <h5 class="mb-3">Daily Spending Trend</h5>
+            <img src="{% static 'charts/current_month_trend.png' %}" alt="Current Month Spending Trend" class="img-fluid">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+ {% else %}
+        <h2 class="mb-4">No transaction have been made</h2>
+  {% endif %}
 {% endblock %}

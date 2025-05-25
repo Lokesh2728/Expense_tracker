@@ -36,13 +36,16 @@
 
 
         <div class="col-md-4">
-            <div class="card shadow-sm border-warning">
+            <div class="card shadow-sm{% if percentage_spent < 80  %} border-warning{% else %} border-danger{% endif %}">
                 <div class="card-body">
-                    <h5 class="card-title text-warning">Monthly Budget</h5>
-                    <p class="card-text display-6">₹{{ montly_budget|default:'0.00' }}</p>
+                    <h5 class="card-title{% if percentage_spent < 80  %} text-warning{% else %} text-danger{% endif %}">
+                        Monthly Budget
+                    </h5>
+                    <p class="card-text display-6">₹{{ montly_budget|default:"0.00" }}</p>
                 </div>
             </div>
-        </div>
+         </div> 
+
     </div>
 
 
@@ -53,7 +56,7 @@
             {% for tx in recent_transactions %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span>{{ tx.date }} - {{ tx.category }}</span>
-                    <span class="d-flex justify-content-center align-items-center  text-danger"> - Debited</span>
+                    <span class="d-flex justify-content-center align-items-center {% if tx.transaction_type == 'Credit' %} text-success {% else %} text-danger {% endif %} "> {{tx.transaction_type}} </span>
                     <span class="badge bg-secondary">₹{{ tx.amount }}</span>
                 </li>
             {% empty %}
