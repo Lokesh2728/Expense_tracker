@@ -27,8 +27,10 @@ urlpatterns = [
     path('otp_verification/', otp_verification, name='otp_verification'),
     path('login/', user_login, name='user_login'),
     path('logout/', user_logout, name='user_logout'),
+    path('Reset_Password/',Reset_Password,name='Reset_Password'),
     path('Balanceview',Balanceview.as_view(),name='Balanceview'),
     path('change_password/',change_password,name='change_password'),
+    path('set-new-password/',set_new_password, name='set_new_password'),
     path('set_budget/',set_budget,name='set_budget'),
     path('dashboard/',dashboard,name='dashboard'),
 

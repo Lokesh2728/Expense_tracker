@@ -1,7 +1,10 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.urls import reverse
+from django.utils import timezone
 # Create your models here.
 class Expense(models.Model):
+
 
     CATEGORY_CHOICES = (
     ('Food', 'Food'),
@@ -29,12 +32,20 @@ class Balance(models.Model):
     total_balance=models.DecimalField( max_digits=10, decimal_places=2,default=0)
     time=models.TimeField(auto_now=True)
 
+    def clean(self):
+        if self.Transactin_type == 'Debit' and self.total_balance < 0:
+            raise ValidationError("Insufficient funds! Cannot perform debit that results in negative balance.")
+        
+    def __str__(self):
+        return f"{self.user_id} - {self.Transactin_type} - ₹{self.balance}"
 
 
 class Buget(models.Model):
     monthly_set=models.DecimalField(max_digits=10,decimal_places=2,default=0)
     budget=models.DecimalField(max_digits=10,decimal_places=2,default=0)
     username=models.ForeignKey("accounts.UserProfile",on_delete=models.CASCADE)
+    last_alert_level = models.IntegerField(default=0)
+    last_reset = models.DateField(default=timezone.now)
 
    
     def __str__(self):

@@ -21,39 +21,50 @@
             </thead>
             <tbody>
                 {% for txn in transactions %}
-                    <tr >
-                        <td class="text-center align-middle">
-                            {% if txn.txn_type == 'Expense' %}
+                        <tr>
+                            <td class="text-center align-middle">
+                                {% if txn.txn_type == 'Debit' %}
                                 <a href="{% url 'update' pk=txn.pk %}" class="text-decoration-none text-primary fw-semibold">
                                     Expense
                                 </a>
-                            {% elif txn.transaction_type == 'Credit' %}
-                                Account Credit
                             {% else %}
-                                Account Debit
+                                <span class="fw-semibold {% if txn.transaction_type == 'Credit' %}text-success{% else %}text-danger{% endif %}">
+                                    {{ txn.transaction_type }}
+                                </span>
                             {% endif %}
                         </td>
-                        <td class="text-center fw-semibold align-middle {% if txn.transaction_type == 'Credit' %}text-success{% elif txn.transaction_type == 'Debit' %}text-danger{% else %}{% endif %}">
-                            ₹{{ txn.transaction_amount|floatformat:2 }}
+
+                        <td class="text-center fw-semibold align-middle 
+                            {% if txn.transaction_type == 'Credit' %}
+                                text-success
+                            {% elif txn.transaction_type == 'Debit' %}
+                                text-danger
+                            {% endif %}">
+                            ₹{{ txn.amount|floatformat:2 }}
                         </td>
+
                         <td class="text-center align-middle">
-                            {{ txn.transaction_date|date:"d M Y" }}
+                            {{ txn.date|date:"d M Y" }}
                         </td>
+                        
                         <td class="text-center align-middle">
-                            {% if txn.txn_type == 'Expense' %}
+                            {% if txn.category  %}
                                 {{ txn.category }}
                             {% else %}
                                 -
                             {% endif %}
                         </td>
-                        <td class="align-middle  text-center ">
+
+                        <td class="text-center align-middle">
                             {% if txn.txn_type == 'Expense' %}
                                 {{ txn.description }}
                             {% else %}
                                 {% if txn.transaction_type == 'Credit' %}
-                                    ₹{{ txn.transaction_amount|floatformat:2 }} added to the account
+                                    ₹{{ txn.amount|floatformat:2 }} added to the account
+                                {% elif txn.transaction_type == 'Debit' %}
+                                    ₹{{ txn.amount|floatformat:2 }} debited from the account for {{txn.category}}
                                 {% else %}
-                                    ₹{{ txn.transaction_amount|floatformat:2 }} debited from the account
+                                    -
                                 {% endif %}
                             {% endif %}
                         </td>

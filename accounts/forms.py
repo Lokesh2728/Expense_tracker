@@ -21,3 +21,12 @@ class EmailOTPForm(forms.ModelForm):
 class UserLoginForm(forms.Form):
     email=forms.EmailField( widget=forms.EmailInput ( attrs={'placeholder':'Enter email'}))
     password=forms.CharField(widget=forms.PasswordInput(attrs={'placeholder':'Enter Password'}))
+
+
+class ResetPassword(forms.Form):
+     email = forms.EmailField(
+        label="Enter your registered email",
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
+        max_length=254
+    )
+    

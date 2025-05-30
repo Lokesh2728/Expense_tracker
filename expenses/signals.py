@@ -4,6 +4,7 @@ from django.dispatch import receiver,Signal
 from django.core.mail import send_mail
 from django.utils.timezone import now
 from .models import *
+from django.db.models import Sum
 
 
 
@@ -69,4 +70,45 @@ def create_transaction_from_balance(sender, instance, created, **kwargs):
             transaction_type=instance.Transactin_type, 
             amount=instance.balance,
             category=''  
+        )
+
+
+@receiver(post_save, sender=Expense)
+def budget_alert_email(sender, instance, created, **kwargs):
+    if not created:
+        return
+
+    user=instance.username
+    total_expense = Expense.objects.filter(username=user).aggregate(Sum('amount'))['amount__sum'] or 0 
+    budget_obj = Buget.objects.filter(username=user).first()
+
+    if not budget_obj or budget_obj.budget == 0:
+        return
+
+    used_percentage = (total_expense /(total_expense + budget_obj.budget)) * 100  # % used from original budget
+
+
+
+    subject = None
+    message = None
+    if  used_percentage >= 50:
+        subject = "🟡 50%  of your budget used!"
+        message = f"Hi ,\n\nYou've used 50% of your monthly budget. Keep an eye on your spending!"
+        budget_obj.last_alert_level = 50
+
+
+
+    elif  used_percentage >= 90:
+        subject = "🔴 90% of your budget used!"
+        message = f"Hi ,\n\nYou've used 90% of your monthly budget. You might want to slow down spending."
+        budget_obj.last_alert_level = 90
+        budget_obj.save()
+
+    if subject:
+        send_mail(
+            subject,
+            message,
+            from_email='lokeshpatel2714@gmail.com',
+            recipient_list=[user.email],
+            fail_silently=True,
         )

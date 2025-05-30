@@ -21,7 +21,7 @@ def home(request):
     montly_budget=Buget.objects.filter(username=user).first()
     Sett=Buget.objects.filter(username=user).values_list('monthly_set', flat=True).first()
     monthly_expense=Expense.objects.filter(username=user).aggregate(Sum('amount'))['amount__sum'] or 0 
-    recent_transactions = Expense.objects.filter(username=user).order_by('-id')[:3]
+    recent_transactions = Transaction.objects.filter(user_id=user).order_by('-id')[:3]
     percentage_spent = (monthly_expense / Sett) * 100 if Sett else 0
 
 
@@ -41,15 +41,9 @@ def home(request):
 @login_required
 def dashboard(request):
     user = request.user
-
-    # Total monthly expense
     monthly_expense = Expense.objects.filter(username=user).aggregate(Sum('amount'))['amount__sum'] or 0 
-
-    # Monthly budget and value
     monthly_budget_obj = Buget.objects.filter(username=user).first()
     monthly_budget = monthly_budget_obj.monthly_set if monthly_budget_obj else 0
-
-    # Calculate percentage spent (avoid ZeroDivisionError)
     percentage = (float(monthly_expense) / float(monthly_budget)) * 100 if monthly_budget else 0
 
     # Generate charts
@@ -61,7 +55,7 @@ def dashboard(request):
     context = {
         'has_expense': monthly_expense > 0,
         'monthly_expense': monthly_expense,
-        'monthly_budget': monthly_budget,  # renamed for consistency
+        'monthly_budget': monthly_budget,  
         'percentage': round(percentage, 2),
         'insight': f"You’ve spent {round(percentage, 2)}% of your budget",
         'bar_chart': 'expenses/static/charts/bar_chart.png',
@@ -82,6 +76,11 @@ class AddExpense(LoginRequiredMixin,CreateView):
     template_name='AddExpense.html'
     success_url=reverse_lazy('home')
 
+    def get_form_kwargs(self):
+        kwargs= super().get_form_kwargs()
+        kwargs['user']=self.request.user
+        return kwargs
+    
 
     def form_valid(self, form):
         user = self.request.user
@@ -91,6 +90,11 @@ class AddExpense(LoginRequiredMixin,CreateView):
         # Get latest total_balance
         latest_balance = Balance.objects.filter(user_id=user).order_by('-created_at', '-time').first()
         previous_total = latest_balance.total_balance if latest_balance else 0
+
+
+        if new_amount > previous_total:
+            form.add_error('amount', 'Insufficient balance to complete this transaction.')
+            return self.form_invalid(form)  # Return error and re-render form
 
         # Create new Balance entry with Debit
         Balance.objects.create(
@@ -106,7 +110,7 @@ class AddExpense(LoginRequiredMixin,CreateView):
         monthly_limit.save()
 
         category = Expense.objects.filter(username_id=user).order_by('-date').values_list('category', flat=True).first()
-        Transaction.send(
+        transaction.send(
             sender=AddExpense,user=user,
             request=self.request,
             transaction_amount=new_amount,
@@ -118,42 +122,13 @@ class AddExpense(LoginRequiredMixin,CreateView):
 
 
 
-class ExpenseList(LoginRequiredMixin,ListView):
-    model=Expense
-    template_name='ExpenseList.html'
-    context_object_name='transactions'
+class ExpenseList(LoginRequiredMixin, ListView):
+    model = Transaction
+    template_name = 'ExpenseList.html'
+    context_object_name = 'transactions'
 
     def get_queryset(self):
-        user = self.request.user
-
-        expenses = Expense.objects.filter(username=user).annotate(
-            transaction_type=models.Value('Debit', output_field=models.CharField()),
-            transaction_amount=models.F('amount'),
-            transaction_date=models.F('date'),
-            transaction_time=models.Value(None, output_field=models.TimeField())
-        )
-
-        balances = Balance.objects.filter(user_id=user).annotate(
-            transaction_type=models.F('Transactin_type'),
-            transaction_amount=models.F('balance'),
-            transaction_date=models.F('created_at'),
-            transaction_time=models.F('time')
-        )
-
-        combined = sorted(
-            chain(expenses, balances),
-            key=lambda obj: (obj.transaction_date, obj.transaction_time or timezone.datetime.min.time()),
-            reverse=True
-        )
-
-        for obj in combined:
-            if isinstance(obj, Expense):
-                obj.txn_type = 'Expense'
-            else:
-                obj.txn_type = 'Balance'
-
-
-        return combined
+        return Transaction.objects.filter(user_id=self.request.user).order_by('-id')
 
 
 class Expense_Update(LoginRequiredMixin,UpdateView):
@@ -208,7 +183,6 @@ class Balanceview(LoginRequiredMixin, CreateView):
 
 
 
-
 @login_required
 def set_budget(request):
     EBFO = Budgetform()
@@ -221,7 +195,9 @@ def set_budget(request):
             budget_obj, created = Buget.objects.get_or_create(username=request.user)
             budget_obj.budget = budget
             budget_obj.monthly_set=budget
+            budget_obj.last_alert_level = 0  
             budget_obj.save()
+
             return HttpResponse('created')
         else:
             return HttpResponse('invalid')

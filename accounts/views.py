@@ -7,8 +7,7 @@ from accounts.models import EmailOTP
 from django.contrib.auth import login,logout,update_session_auth_hash
 from .utils import custom_authenticate
 from django.contrib.auth.decorators import login_required
-from .signals import password_changed
-
+from .signals import password_changed , reset_password
 from django.urls import reverse
 # Create your views here.
 
@@ -113,3 +112,51 @@ def change_password(request):
     return render(request,"Change_password.html")
 
 
+
+
+
+
+def Reset_Password(request):
+    EPRFO = ResetPassword()
+    if request.method == 'POST':
+        RPFO = ResetPassword(request.POST)
+        if RPFO.is_valid():
+            user_email = RPFO.cleaned_data['email']
+            checkmail = UserProfile.objects.values_list('email', flat=True)
+
+            if user_email in checkmail:
+                reset_password.send(sender=None, email=user_email)
+                return redirect('otp_verification')  
+            else:
+                messages.error(request, "User not found.")
+    
+    d = {'EPRFO': EPRFO}
+    return render(request, 'reset_password.html', d)
+
+
+
+
+
+def  set_new_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        new_password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if new_password != confirm_password:
+            messages.error(request, "❌ Passwords do not match.")
+            return render(request, 'set_new_password.html', {'email': email})
+
+        try:
+            user = UserProfile.objects.get(email=email)
+        except UserProfile.DoesNotExist:
+            messages.error(request, "❌ No user found with that email.")
+            return render(request, 'set_new_password.html')
+
+        user.set_password(new_password)
+        user.save()
+
+        messages.success(request, "✅ Password has been reset. You can now log in.")
+        return redirect('user_login')  # redirect to login page
+
+    return render(request, 'set_new_password.html') 

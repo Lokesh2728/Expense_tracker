@@ -36,9 +36,9 @@
 
 
         <div class="col-md-4">
-            <div class="card shadow-sm{% if percentage_spent < 80  %} border-warning{% else %} border-danger{% endif %}">
+            <div class="card shadow-sm{% if percentage_spent > 80  %} border-warning{% else %} border-danger{% endif %}">
                 <div class="card-body">
-                    <h5 class="card-title{% if percentage_spent < 80  %} text-warning{% else %} text-danger{% endif %}">
+                    <h5 class="card-title{% if percentage_spent > 80  %} text-warning{% else %} text-danger{% endif %}">
                         Monthly Budget
                     </h5>
                     <p class="card-text display-6">₹{{ montly_budget|default:"0.00" }}</p>
