@@ -29,7 +29,7 @@ The **Personal Expense Tracker** is a modern, responsive web application built w
 |----------------------|------------------------------------------|
 | Python & Django      | Backend logic and ORM                   |
 | HTML5, CSS3, Bootstrap | Frontend UI and responsiveness         |
-| SQLite               | Lightweight development database         |
+| MYSQL                | Friendly development database            |
 | SMTP (Gmail)         | Email notifications and alerts           |
 | Django Auth          | User accounts & password management      |
 | JavaScript           | Frontend interactivity (UI)              |
