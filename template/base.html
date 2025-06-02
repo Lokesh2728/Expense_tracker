@@ -1,60 +1,78 @@
 {% load static %}
-<!-- base.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Expense Tracker</title>
+    
+    <!-- Bootstrap and Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
-    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    
+    <!-- Dark mode CSS (initially disabled) -->
+    <link id="darkTheme" rel="stylesheet" href="{% static 'css/darkmode.css' %}" disabled>
 
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm  " >
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="{% url 'home' %}">Expense Tracker</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<body class=  "d-flex flex-column min-vh-100">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'home' %}">Expense Tracker</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'home' %}">Home</a>
-          </li>
-          {% if user.is_authenticated %}
-          
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Profile</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a></li>
-                <li><a class="dropdown-item" href="{% url 'set_budget' %}">Set Monthly Budget</a></li>
-                <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{% url 'user_logout' %}">Logout</a></li>
-              </ul>
-            </li>
-          {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'register' %}">Register/Login</a>
-            </li>
-          {% endif %}
-        </ul>
-      </div>
-    </div>
-  </nav>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
 
-  
-    {% block body %}
-    {% endblock %}
-  
-  
-    <footer class="text-center py-2 bg-dark text-white fixed-bottom">
-    <p>&copy; Desinged and maintain by Lokesh  </p>
-</footer>
+                    <!-- Theme toggle button -->
+                    <li class="nav-item me-2">
+                        <button id="themeToggle" class="btn btn-outline-none px-3 py-2 d-flex align-items-center" style="height: 40px;">
+                            <i class="bi bi-moon-stars-fill fs-5"></i>
+                        </button>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                            Profile
+                        </a>
+                        <ul class="dropdown-menu dropdown-scroll">
+                            <li><a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a></li>
+                            <li><a class="dropdown-item" href="{% url 'set_budget' %}">Set Monthly Budget</a></li>
+                            <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'user_logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register/Login</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Body -->
+     <main class="flex-fill">
+      {% block body %}
+      {% endblock %}
+      </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-2 bg-dark text-white mb-0 ">
+        <p>&copy; Designed and maintained by Lokesh</p>
+    </footer>
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/dark.js' %}"></script>
 </body>
 </html>

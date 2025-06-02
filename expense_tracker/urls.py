@@ -33,6 +33,7 @@ urlpatterns = [
     path('set-new-password/',set_new_password, name='set_new_password'),
     path('set_budget/',set_budget,name='set_budget'),
     path('dashboard/',dashboard,name='dashboard'),
+    path('Profile/',Profile,name='Profile'),
 
 
 

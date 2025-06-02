@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-4">
+          <div class="text-center mb-4">
+            <img src="{% static 'images/default-avatar.png' %}" alt="User Avatar"
+                 class="rounded-circle shadow" width="120" height="120">
+            <h3 class="mt-3 mb-0 text-primary">{{ user.first_name }} {{ user.last_name }}</h3>
+            <p class="text-muted">@{{ user.username }}</p>
+          </div>
+
+          <hr>
+
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <strong>Email:</strong>
+              <span class="text-end">{{ user.email }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <strong>Date Joined:</strong>
+              <span class="text-end">{{ user.date_joined|date:"F j, Y" }}</span>
+            </li>
+          </ul>
+
+          <div class="mt-4 text-center">
+            <a href="{% url 'change_password' %}" class="btn btn-outline-warning px-4">
+              🔐 Change Password
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

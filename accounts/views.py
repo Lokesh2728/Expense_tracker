@@ -41,14 +41,17 @@ def otp_verification(request):
         if OTPVF.is_valid():
             email=OTPVF.cleaned_data['email']
             otp_code=OTPVF.cleaned_data['otp_code']
+            user=UserProfile.objects.get(email=email)
+            status=user.is_active
             try:
                 EOTP=EmailOTP.objects.get(email=email,otp_code=otp_code)
                 if EOTP.is_expired():
                     messages.error(request, 'OTP expired. Please register again.')
                     return HttpResponseRedirect('/register')
-                else:
-                    user=UserProfile.objects.get(email=email)
-                    user.is_active=True
+                
+
+                elif not status :  # if user is not active
+                    user.is_active = True
                     user.save()
                     EOTP.delete()
                     send_mail(
@@ -59,6 +62,8 @@ def otp_verification(request):
                         fail_silently=True,
                     )
                     return HttpResponseRedirect('/home')
+                else:
+                    return HttpResponseRedirect('/set-new-password')
                 
             except EmailOTP.DoesNotExist:
                 messages.error(request,'Invalid OTP')
@@ -160,3 +165,8 @@ def  set_new_password(request):
         return redirect('user_login')  # redirect to login page
 
     return render(request, 'set_new_password.html') 
+
+
+
+def Profile(request):
+    return render(request,'Profile.html')

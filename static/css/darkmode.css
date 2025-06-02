@@ -1,0 +1,137 @@
+:root {
+  --bg-color: #121212;
+  --card-color: #1e1e1e;
+  --text-color: #e0e0e0;
+  --accent-color: #bb86fc;
+  --navbar-bg: #1f1f1f;
+  --navbar-text: #f0f0f0;
+  --footer-bg: #1f1f1f;
+  --footer-text: #ccc;
+  --transition-speed: 0.3s;
+}
+
+/* General background & text */
+body {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+/* Make generic divs darker */
+div {
+  background-color: transparent !important;
+  color: var(--text-color) !important;
+}
+
+/* Containers/cards */
+/* .container, .card, .shadow, .p-3, .mb-3 {
+  background-color: var(--card-color) !important;
+  color: var(--text-color) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+} */
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--accent-color) !important;
+}
+
+/* Paragraphs and small text */
+p, span, small, label, .form-label, .text-muted {
+  color: var(--text-color) !important;
+}
+
+/* Navbar */
+.navbar {
+  background-color: var(--navbar-bg) !important;
+  color: var(--navbar-text) !important;
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand,
+.navbar .dropdown-item {
+  color: var(--navbar-text) !important;
+}
+
+.navbar .dropdown-menu {
+  background-color: var(--card-color) !important;
+}
+
+.navbar .dropdown-item:hover {
+  background-color: #2a2a2a !important;
+  /* text-decoration-color: white; */
+}
+
+/* Footer */
+footer {
+  background-color: var(--footer-bg) !important;
+  color: var(--footer-text) !important;
+}
+
+/* Buttons (only generic ones, not Bootstrap colored like btn-primary, btn-success) */
+button:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info),
+.btn:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info) {
+  background-color: var(--accent-color) !important;
+  color: #000 !important;
+  transition: background-color var(--transition-speed);
+}
+
+button:hover:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info),
+.btn:hover:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info) {
+  background-color: #9a6bd9 !important;
+}
+
+/* Form inputs */
+input, textarea, select {
+  background-color: #2a2a2a !important;
+  color: var(--text-color) !important;
+  border: 1px solid #444 !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #aaa !important;
+}
+
+/* Links */
+a {
+  color: var(--accent-color) !important;
+}
+
+a:hover {
+  color: #d1a6fc !important;
+}
+
+/* Dropdowns */
+.dropdown-menu {
+  background-color: var(--card-color) !important;
+  border: 1px solid #333;
+}
+
+/* Scrollable dropdown menu if too tall */
+.dropdown-scroll {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+/* Optional: make scrollbar prettier */
+.dropdown-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.dropdown-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+
+ .dropdown-scroll {
+          max-height: 250px;
+          overflow-y: auto;
+      }
+      .dropdown-scroll::-webkit-scrollbar {
+          width: 6px;
+      }
+      .dropdown-scroll::-webkit-scrollbar-thumb {
+          background-color: rgba(0, 0, 0, 0.2);
+          border-radius: 3px;
+      }
