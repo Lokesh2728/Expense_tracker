@@ -57,11 +57,9 @@ With increasing digital payments and lifestyle complexity, keeping track of ever
 
 ## 📬 Upcoming Enhancements
 
-- 📧 Automated Monthly Summary Emails
-- 📊 Chart.js Integration for visual data graphs
 - 🔍 Expense Filters (by category, date, amount)
 - 🎨 UI/UX Improvements and dark mode
-- 🔄 Reset Budget Monthly (via Celery or cron jobs)
+- 🔄 Reset Budget Monthly
 - 📥 Downloadable Reports (PDF/Excel)
 
 ---
@@ -71,7 +69,7 @@ With increasing digital payments and lifestyle complexity, keeping track of ever
 **Lokesh Patel**  
 📫 [lokeshpatel2714@gmail.com](mailto:lokeshpatel2714@gmail.com)  
 🔗 [LinkedIn](https://www.linkedin.com/in/lokesh27patel)  
-🌍 Portfolio: *Coming Soon*
+🌍 [Portfolio](https://lokesh2728.github.io/Portfolio/)
 
 ---
 
