@@ -29,6 +29,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["expense-tracker-6v28.onrender.com"]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://expense-tracker-6v28.onrender.com',
+]
+
 
 # Application definition
 
