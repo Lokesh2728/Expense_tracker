@@ -1,8 +1,8 @@
 :root {
-  --bg-color: #121212;
+  --bg-color: #232323;
   --card-color: #1e1e1e;
   --text-color: #e0e0e0;
-  --accent-color: #bb86fc;
+  --accent-color: #efe2fe;
   --navbar-bg: #1f1f1f;
   --navbar-text: #f0f0f0;
   --footer-bg: #1f1f1f;
@@ -24,12 +24,14 @@ div {
 }
 
 /* Containers/cards */
-/* .container, .card, .shadow, .p-3, .mb-3 {
+.containers, .card, .shadow, .p-3, .mb-3 {
   background-color: var(--card-color) !important;
   color: var(--text-color) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
   transition: background-color var(--transition-speed), color var(--transition-speed);
-} */
+} 
+
+
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
